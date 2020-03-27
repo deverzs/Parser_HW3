@@ -4,13 +4,14 @@
 #include<fstream>
 #include<vector>
 #include<string>
-#include "stack.h"
+#include "stack.h" //written by Zsuzsanna Dianovics
 
 using namespace std;
 
 //---------------------------------------
 // CS421 File ll1.cpp for HW3A LL1 Table-Driven Parser
-// Your name: **
+// Your name: Zsuzsanna Dianovics
+// Date: March 26, 2020
 //---------------------------------------
 
 // Complete this to fit the HW3A specification - look for **
@@ -26,103 +27,157 @@ vector<char> M[3][2];  // the table of rules
 	   // which is a vector of characters
 
 //  ------- conversion functions ------------------------
+
+//global stack 
 stack st;
 
 
-// to convert non-terms S, A, B to table rows 0, 1, 2
+// PURPOSE: to convert non-terms S, A, B to table rows 0, 1, 2
+// PARAMETER: C character to convert to int
+// RETURN: int that is the version of C
 int toRow(char C)
 {
-	//**  bunch of if then else
-	if (C == 'S') return 0;
-	else if (C == 'A') return 1;
+	//if the character is a C, convert to zero
+	if (C == 'S') { return 0; }
+	//if the character is a A, convert to 1
+	else if (C == 'A') { return 1; }
+	//if neither, return -1 for error
 	return -1;
 }
 
-// to convert '0' and '1' to table columns 0 and 1 
+// PURPOSE: to convert '0' and '1' to table columns 0 and 1 
+// PARAMETER: c character to convert to int
+// RETURN: int that is the version of c
 int toCol(char c)
 {
-	// ** bunch of if then else
-	if (c == '0') return 0;
-	else if (c == '1') return 1;
+	// if the character is a 0, convert to zero
+	if (c == '0') { return 0; }
+	//if the character is a 1, convert to 1
+	else if (c == '1') { return 1; }
+	//if neither, return -1 for error
 	return 1;
 }
 
-// to convert row 0, 1, 2 to non-terms S, A and B
+// PURPOSE: to convert row 0, 1, 2 to non-terms S, A and B
+// PARAMETER: r int to convert to char
+// RETURN: char that is the version of r
 char toNonterm(int r)
 {
-	// ** bunch of if then else
+	// if the int is a 0, convert to 'S'
 	if (r == 0) { return 'S'; }
+	// if the int is a 1, convert to 'A'
 	else if (r == 1) { return 'A'; }
+	// if the int is a 2, convert to 'B'
 	else if (r == 2) { return 'B'; }
+	//else return error
 	else { return 'E'; }
 
 }
 
 
-// ** Then complete the following functions.-----------------------------
+// DONE: complete the following functions.-----------------------------
 
-// to display a rule's rhs which is in vector V
+// PURPOSE: to display a rule's rhs which is in vector V
+// PARAMETER: V vector that has rhs data
+// RETURN: none
 void displayVector(vector<char> V)
 {
-	if (V.empty()) { cout << " ";  }
-	// ** display V horizontally e.g. 0 A 0
+	//if the V is empty, return a space
+	if (V.empty()) { cout << " "; }
+	//display V horizontally e.g. 0 A 0
 	else {
-
+		//run through the vector in a loop
+		//print as go
 		for (int i = 0; i < V.size(); i++)
 		{
 			cout << V[i] << " ";
 		}
-		cout << "\t" ;
+		//move over a column
+		cout << "\t";
 	}
 }
 
+// PURPOSE: remove whitespace from string
+// PARAMETER: s string to strip
+// RETURN: string that is clear of whitespace
 string stripper(string s)
 {
+	//string to return
 	string s2;
-	for (int i=0; i < s.length(); i++)
+	//run through the string in a loop
+	for (int i = 0; i < s.length(); i++)
 	{
+		//if it is a space, so nothing
 		if (s[i] == ' ')
-		{}
+		{
+		}
+		//otherwise, add the char to the string
 		else
 		{
 			s2 += s[i];
 		}
-		
 	}
+	//return the string
 	return s2;
 }
 
-// to read in the rules into M, make sure ; is not stored
+// PURPOSE: to read in the rules into M
+// PARAMETER: none
+// RETURN: none
+// uses: stripper(), toNonterm(), displayVector()
+/*
+Algorithm:
+	open file
+	get first line, delimited with ';'
+	start loop to read while there are lines to read
+		strip the line read
+		get first two chars, one is row, other col
+		create new vector, cell'
+		add to cell the ch read
+		read next character
+		in a loop read the next ch until end of line
+			add ch to cell
+			advance to next ch
+		add the cell to M
+		clear fin
+		reset count
+		read next line
+	close file
+	display the table read
+
+*/
 void readrules()
 {
 	string rules = "C:\\Users\\dever\\Desktop\\Spring2020\\TheoryComp\\cs421files\\CS421Progs\\HW3A_LL1\\rules";
 	ifstream fin(rules, ios::in);
-	int count = 0;
-	char ch;
-	int row, col;
+	//ifstream fin ("rules", ios::in);
 
-	//read first line
+	int count = 0;			//traverse the string input
+	char ch;				//the char read
+	int row, col;			//values for row and column
+
+	//read first line, delimit with ;
 	getline(fin, rules, ';');
 
 	// read string till end of file
 	while (!(fin.eof()))
 	{
-		//cout << "read line: " << rules << endl << endl;
+		//remove whitespace from line read 
 		rules = stripper(rules);
+
 		// first character in the string at [0]
 		row = toRow(rules[count++]);
 
 		//second character at [1]
 		ch = rules[count++];
 
-		//also, asign no column
+		//assign ch to column, as well
 		col = toCol(ch);
 
 		//create new vector to be added to M[row][col]
-		vector<char> cell ;
+		vector<char> cell;
 
-		//first char in cell is [1]
-		//cout << "pushing to cell: " << ch << endl;
+		//add to cell vector
 		cell.push_back(ch);
 
 		//get next char [2]
@@ -131,13 +186,15 @@ void readrules()
 		//run to end of string
 		while (ch != '\0')
 		{
+			//add each char to the cell
 			cell.push_back(ch);
+			//get next char
 			ch = rules[count++];
 		}
 		//add cell to M table
 		M[row][col] = cell;
 
-		//increment count for string
+		//reset count for string
 		count = 0;
 
 		//clear bits
@@ -147,14 +204,17 @@ void readrules()
 		//get next string
 		getline(fin, rules, ';');
 	}
-
+	//close file
+	fin.close();
 
 	//   Display the table nicely  
 	//    use toNonterm to show row labels (S, A, B)
 	//    use displayVector for each content 
 	for (int i = 0; i < 3; i++)
 	{
+		//label for row
 		cout << toNonterm(i) << ":\t";
+		//print each row's vectors
 		for (int j = 0; j < 2; j++)
 		{
 			displayVector(M[i][j]);
@@ -165,77 +225,97 @@ void readrules()
 
 }
 
-//  pushes V contents to the stack 
+// PURPOSE: pushes V contents to the stack 
+// PARAMETER: V vector
+// RETURN: none
 void addtostack(vector<char> V)
 {
-	cout << "adding rhs of a rule to the stack. " << endl;
+	cout << "adding rhs of a rule to the stack " << endl;
+
+	//get size of V
 	int size = V.size();
+
+	//count at 1 
 	int count = 1;
-	// **  be careful of the order
+
+	// add V to the stack in reverse
 	while (!V.empty())
 	{
 		char ch = V[size - count++];
-		st.push(ch);		
+		st.push(ch);
 		V.pop_back();
 	}
-	//cout << "Stack:\n";
+	//display the stack
 	st.displayAll();
 }
 
+// PURPOSE: to read client entred string and check 
+//     if each character is appropriate
+/*
+Algorithm:
+
+*/
+
 int main()
 {
-	readrules();  // M is filled and displayed 
-	
-	string ss;
+	// M is filled and displayed 
+	readrules();
+
+	//User entered input
+	string ss;			//hold the read input
+	int index = 0;  	// index for ss
+	char top, popped;	//hold char from ss and stack
 
 	cout << "Enter a string made of 0's and/or 1's: ";
 	cin >> ss;
 
-	// DONE push 'S' onto the stack to start
-
+	// push '$' and 'S' onto the stack to start
 	st.push('$');
 	st.push('S');
 
-	//cout << "Stack:\n";
 	// DONE display the stack vertically from top to bottom
 	st.displayAll();
-	
-	int index = 0;  // index for ss
-	char top, popped;
-	char current = ss[index];
-	//cout << "current char is: " << current << endl;
-	
-	
-	st.topElem(top);
-	//cout << " Top of stack is: " << top << endl;
 
-	while (current != '\0')  // for each char of ss
+	//get first char in string
+	char current = ss[index];
+
+	//peek at the top of the stack
+	st.topElem(top);
+
+	// for each char of ss
+	while (current != '\0')
 	{
 		cout << "current char is: " << current << endl;
-		//cout << "Top is: " << top << " Current char: " << current << endl;
 
+		//check if we are at the bottom of the stack and need to accept
 		if (top == '$' && current == '$')
 		{
-			//cout << "Accept! ($ == current char)\n";
 			break;
 		}
+
+		//if the top of the stack is a Nonterminal
 		else if (top == 'S' || top == 'A' || top == 'B')
 		{
+			//if the current char is greater than 1
+			//then it is out of the scope of the language
 			if ((current - 48) > 1)
 			{
 				break;
 			}
-			//cout << "Nonterminal\n";
+
+			//otherwise, pop the stack
 			st.pop(popped);
+
 			//find which cell to add to stack
-			//find the row
 			for (int i = 0; i < 3; i++)
 			{
+				//find the row
 				if (top == toNonterm(i)) {
-					addtostack(M[i][current-48]);
+					addtostack(M[i][current - 48]);
 				}
 			}
 		}
+		//if the top matches the current char
 		else if (top == current)
 		{
 			cout << "matched!\n";
@@ -243,47 +323,47 @@ int main()
 			st.displayAll();
 			index++;
 		}
+		//if the only thing in the stack is $, but still have char to read
 		else if (!st.isEmpty() && (top == '$'))
 		{
 			break;
 		}
+		//generally, nothing left to check
 		else
 		{
-			
 			break;
 		}
+
+		//get the next top
 		st.topElem(top);
+		//get next char
 		current = ss[index];
 
 	} //end while ss string
 
-	if(top == '$' && current == '$')
-	{ cout << ">>Accept!\n";}
+
+	//Results:
+
+	//if we reach $ at same time for both, accept
+	if (top == '$' && current == '$')
+	{
+		cout << ">>Accept!\n";
+	}
+	//if there is still char in the stack, other than $
 	else if (top == '$' && current != '$')
 	{
 		cout << ">>Error - stack is empty. Reject!\n";
 	}
+	//if the current doesn't match the top
 	else if (current != top)
 	{
 		cout << ">>Mismatch error. Reject!\n";
 	}
+	//if we can't find a rule
 	else if ((current - 48) > 1)
 	{
 		cout << ">>Error - no rule. Reject!\n";
 	}
 
-		// Based on ss[i] and 
-		//    the top of stack, update the stack: 
-		// ** note that empty stack will cause immediate failure  
-		// ** note that top of stack terminal and ss[i] mismatching
-		//    will cause immediate failure 
-		// ** note that no entry in M for the top of stack (non-terminal)
-		//    and ss[i] will cause immediate
-		//    failure  (use toRow and toCol to look up M)
-		// ** otherwise, addtoStack the M entry based on ss[i] and the top of stack 
-
-
-
-  // ** Here, check for success for failure based on stack empty or not
 
 }// end of main
