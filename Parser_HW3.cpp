@@ -213,9 +213,10 @@ int main()
 	{
 		cout << "current char is: " << current << endl;
 		//cout << "Top is: " << top << " Current char: " << current << endl;
+
 		if (top == '$' && current == '$')
 		{
-			cout << "Accept\n";
+			//cout << "Accept! ($ == current char)\n";
 			break;
 		}
 		else if (top == 'S' || top == 'A' || top == 'B')
@@ -256,11 +257,15 @@ int main()
 
 	} //end while ss string
 
-	if(top == '$')
-	{ cout << "YUP\n";}
-	else if (st.isEmpty())
+	if(top == '$' && current == '$')
+	{ cout << ">>Accept!\n";}
+	else if (top == '$' && current != '$')
 	{
-		cout << "Stack emtpty\n";
+		cout << ">>Error - stack is empty. Reject!\n";
+	}
+	else if (current != top)
+	{
+		cout << ">>Mismatch error. Reject!\n";
 	}
 	else if ((current - 48) > 1)
 	{

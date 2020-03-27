@@ -81,7 +81,7 @@ void stack::topElem(el_t& elem)
 //         Otherwise, diplays the elements vertically.
 void stack::displayAll()
 {
-	cout << "STACK" << endl;
+	cout << "\nSTACK" << endl;
 	if (isEmpty()) cout << "[ empty ]" << endl;
 	else for (int i = top; i >= 0; i--)
 	{
